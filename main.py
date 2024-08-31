@@ -1,32 +1,21 @@
 import os
 import random
 import time
-from colorama import Fore, Style, init
-
+from colorama import Fore, init
 
 init(autoreset=True)
 
 def clear_screen():
-    """Ekranı temizler."""
-    os.system('clear') 
+    os.system('clear')
 
 def print_menu():
-    """Menüyü yazdırır."""
     clear_screen()
-    print(Fore.BLUE + "
-   ____ ____      _    _____ _____ ___   ___  _     
-  / ___|  _ \    / \  |  ___|_   _/ _ \ / _ \| |    
- | |  _| |_) |  / _ \ | |_    | || | | | | | | |    
- | |_| |  _ <  / ___ \|  _|   | || |_| | |_| | |___ 
-  \____|_| \_\/_/   \_\_|     |_| \___/ \___/|_____|
-                                                    
-    ")
+    print(Fore.BLUE + "GRAFTOOL")
     print(Fore.RED + "Developer: carbans2717")
     print(Fore.GREEN + "[01] Çıkış")
     print(Fore.GREEN + "[02] Random Gmail")
 
 def generate_random_gmails(count):
-    """Rastgele Gmail adresleri üretir."""
     gmails = []
     for _ in range(count):
         username = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz1234567890', k=10))
