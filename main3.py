@@ -10,7 +10,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    ip = request.remote_addr
+    # İstemcinin IP adresini almak için X-Forwarded-For başlığını kontrol et
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
     return f"Your IP address is {ip}"
 
 def start_ip_logger():
