@@ -10,7 +10,14 @@ def clear_screen():
 
 def print_menu():
     clear_screen()
-    print(Fore.BLUE + "GRAFTOOL")
+    print(Fore.BLUE + """
+   ____ ____      _    _____ _____ ___   ___  _     
+  / ___|  _ \    / \  |  ___|_   _/ _ \ / _ \| |    
+ | |  _| |_) |  / _ \ | |_    | || | | | | | | |    
+ | |_| |  _ <  / ___ \|  _|   | || |_| | |_| | |___ 
+  \____|_| \_\/_/   \_\_|     |_| \___/ \___/|_____|
+                                                    
+""")
     print(Fore.RED + "Developer: carbans2717")
     print(Fore.GREEN + "[01] Çıkış")
     print(Fore.GREEN + "[02] Random Gmail")
