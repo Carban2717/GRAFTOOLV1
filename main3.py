@@ -3,6 +3,7 @@ import random
 import time
 from colorama import Fore, init
 from flask import Flask, request
+import threading
 
 init(autoreset=True)
 
@@ -10,12 +11,16 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    # İstemcinin IP adresini almak için X-Forwarded-For başlığını kontrol et
-    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    # İstemcinin IP adresini almak için çeşitli başlıkları kontrol et
+    forwarded_for = request.headers.get('X-Forwarded-For')
+    if forwarded_for:
+        ip = forwarded_for.split(',')[0]  # İlk IP'yi al
+    else:
+        ip = request.remote_addr
     return f"Your IP address is {ip}"
 
 def start_ip_logger():
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=5000, debug=True)  # Portu 5000 olarak değiştirdik
 
 def clear_screen():
     os.system('clear')
@@ -80,7 +85,12 @@ def main():
         elif choice == '4':
             clear_screen()
             print(Fore.GREEN + "IP Logger başlatılıyor...")
-            start_ip_logger()
+            # Flask uygulamasını bir iş parçacığında başlat
+            server_thread = threading.Thread(target=start_ip_logger)
+            server_thread.daemon = True
+            server_thread.start()
+            print(Fore.GREEN + "IP Logger çalışıyor. Tarayıcınızdan http://localhost:5000 adresine gidin.")
+            input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
         else:
             clear_screen()
             print(Fore.RED + "Geçersiz seçim. Lütfen tekrar deneyin.")
