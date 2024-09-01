@@ -2,6 +2,7 @@ import os
 import random
 import time
 import requests
+import socket
 from colorama import Fore, init
 
 init(autoreset=True)
@@ -27,7 +28,8 @@ def print_menu():
     print(Fore.GREEN + "[02] Random Gmail")
     print(Fore.GREEN + "[03] Random Cart Generator")
     print(Fore.GREEN + "[04] IP Adresi Sorgulama")
-    print(Fore.GREEN + "[05] Admin Panel")  # Admin panel seçeneği en sonda
+    print(Fore.GREEN + "[05] Port Tarayıcı")  # Yeni seçenek
+    print(Fore.GREEN + "[06] Admin Panel")  # Admin panel seçeneği en sonda
 
 def generate_random_gmails(count):
     gmails = []
@@ -73,6 +75,32 @@ def get_ip_info(ip_address):
     except requests.RequestException as e:
         print(Fore.RED + "Bir hata oluştu:", e)
 
+def scan_ports(host):
+    open_ports = []
+    for port in range(1, 1025):  # İlk 1024 portu tarar
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(1)
+            result = s.connect_ex((host, port))
+            if result == 0:
+                open_ports.append(port)
+    return open_ports
+
+def port_scanner():
+    clear_screen()
+    print(Fore.WHITE + "Tarama yapılacak IP adresi:")
+    host = input()
+    print(Fore.GREEN + f"{host} adresinde port taraması yapılıyor...")
+    open_ports = scan_ports(host)
+    if open_ports:
+        print(Fore.GREEN + "Açık portlar:")
+        for port in open_ports:
+            print(Fore.GREEN + f"Port {port}")
+        user_activity_log.append(f"Port tarandı: {host} - Açık portlar: {', '.join(map(str, open_ports))}")
+    else:
+        print(Fore.RED + "Açık port bulunamadı.")
+        user_activity_log.append(f"Port tarandı: {host} - Açık port bulunamadı.")
+    input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
+
 def admin_panel():
     clear_screen()
     print(Fore.RED + "Admin Password:")
@@ -91,7 +119,7 @@ def admin_panel():
 def main():
     while True:
         print_menu()
-        choice = input(Fore.GREEN + "Seçiminizi yapın (1, 2, 3, 4 veya 5): ")
+        choice = input(Fore.GREEN + "Seçiminizi yapın (1, 2, 3, 4, 5 veya 6): ")
 
         if choice == '1':
             clear_screen()
@@ -121,6 +149,8 @@ def main():
             get_ip_info(ip_address)
             input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
         elif choice == '5':
+            port_scanner()
+        elif choice == '6':
             admin_panel()
         else:
             clear_screen()
