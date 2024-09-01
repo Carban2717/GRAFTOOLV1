@@ -2,7 +2,7 @@ import os
 import random
 import time
 import requests
-import socket
+import re
 from colorama import Fore, init
 
 init(autoreset=True)
@@ -28,8 +28,8 @@ def print_menu():
     print(Fore.GREEN + "[02] Random Gmail")
     print(Fore.GREEN + "[03] Random Cart Generator")
     print(Fore.GREEN + "[04] IP Adresi Sorgulama")
-    print(Fore.GREEN + "[05] Port Tarayıcı")  # Yeni seçenek
-    print(Fore.GREEN + "[06] Admin Panel")  # Admin panel seçeneği en sonda
+    print(Fore.GREEN + "[05] Admin Panel")
+    print(Fore.GREEN + "[06] Şifre Gücü Testi")  # Yeni seçenek
 
 def generate_random_gmails(count):
     gmails = []
@@ -75,31 +75,26 @@ def get_ip_info(ip_address):
     except requests.RequestException as e:
         print(Fore.RED + "Bir hata oluştu:", e)
 
-def scan_ports(host):
-    open_ports = []
-    for port in range(1, 1025):  # İlk 1024 portu tarar
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(1)
-            result = s.connect_ex((host, port))
-            if result == 0:
-                open_ports.append(port)
-    return open_ports
+def check_password_strength(password):
+    if len(password) < 8:
+        return "Şifre çok kısa. En az 8 karakter olmalı."
 
-def port_scanner():
-    clear_screen()
-    print(Fore.WHITE + "Tarama yapılacak IP adresi:")
-    host = input()
-    print(Fore.GREEN + f"{host} adresinde port taraması yapılıyor...")
-    open_ports = scan_ports(host)
-    if open_ports:
-        print(Fore.GREEN + "Açık portlar:")
-        for port in open_ports:
-            print(Fore.GREEN + f"Port {port}")
-        user_activity_log.append(f"Port tarandı: {host} - Açık portlar: {', '.join(map(str, open_ports))}")
-    else:
-        print(Fore.RED + "Açık port bulunamadı.")
-        user_activity_log.append(f"Port tarandı: {host} - Açık port bulunamadı.")
-    input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
+    # Şifre karmaşıklığını kontrol et
+    lower = re.compile(r'[a-z]')
+    upper = re.compile(r'[A-Z]')
+    digit = re.compile(r'\d')
+    special = re.compile(r'[!@#$%^&*(),.?":{}|<>]')
+    
+    if not lower.search(password):
+        return "Şifre en az bir küçük harf içermeli."
+    if not upper.search(password):
+        return "Şifre en az bir büyük harf içermeli."
+    if not digit.search(password):
+        return "Şifre en az bir rakam içermeli."
+    if not special.search(password):
+        return "Şifre en az bir özel karakter içermeli."
+    
+    return "Şifre güçlü."
 
 def admin_panel():
     clear_screen()
@@ -149,9 +144,15 @@ def main():
             get_ip_info(ip_address)
             input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
         elif choice == '5':
-            port_scanner()
-        elif choice == '6':
             admin_panel()
+        elif choice == '6':
+            clear_screen()
+            print(Fore.WHITE + "Şifreyi girin:")
+            password = input()
+            result = check_password_strength(password)
+            print(Fore.GREEN + result)
+            user_activity_log.append(f"Şifre testi yapıldı: {result}")
+            input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
         else:
             clear_screen()
             print(Fore.RED + "Geçersiz seçim. Lütfen tekrar deneyin.")
