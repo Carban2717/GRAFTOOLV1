@@ -8,64 +8,62 @@ from colorama import Fore, init
 
 init(autoreset=True)
 
-# Desteklenen ülkeler ve kodları
-countries = {
-    'USA': 'en_US',
-    'Germany': 'de_DE',
-    'France': 'fr_FR',
-    'Italy': 'it_IT',
-    'Spain': 'es_ES',
-    'UK': 'en_GB',
-    'Canada': 'en_CA',
-    'Australia': 'en_AU',
-    'Japan': 'ja_JP',
-    'China': 'zh_CN',
-    'Brazil': 'pt_BR',
-    'India': 'en_IN',
-    'Russia': 'ru_RU',
-    'South Africa': 'en_ZA',
-    'Mexico': 'es_MX',
-    'Argentina': 'es_AR',
-    'Chile': 'es_CL',
-    'Colombia': 'es_CO',
-    'Peru': 'es_PE',
-    'Venezuela': 'es_VE',
-    'Saudi Arabia': 'ar_SA',
-    'United Arab Emirates': 'en_AE',
-    'Turkey': 'tr_TR',
-    'Egypt': 'ar_EG',
-    'Israel': 'en_IL',
-    'Pakistan': 'en_PK',
-    'Thailand': 'th_TH',
-    'South Korea': 'ko_KR',
-    'Malaysia': 'ms_MY',
-    'Singapore': 'en_SG',
-    'Philippines': 'en_PH',
-    'Vietnam': 'vi_VN',
-    'New Zealand': 'en_NZ',
-    'Ireland': 'en_IE',
-    'Sweden': 'sv_SE',
-    'Norway': 'no_NO',
-    'Denmark': 'da_DK',
-    'Finland': 'fi_FI',
-    'Greece': 'el_GR',
-    'Portugal': 'pt_PT',
-    'Poland': 'pl_PL',
-    'Czech Republic': 'cs_CZ',
-    'Hungary': 'hu_HU',
-    'Romania': 'ro_RO',
-    'Bulgaria': 'bg_BG',
-    'Ukraine': 'uk_UA',
-    'Belarus': 'be_BY',
-    'Lithuania': 'lt_LT',
-    'Latvia': 'lv_LV',
-    'Estonia': 'et_EE',
-    'Slovakia': 'sk_SK',
-    'Croatia': 'hr_HR'
-}
-
 # Kullanıcı işlemlerini takip etmek için bir liste
 user_activity_log = []
+
+# Faker kütüphanesi ile telefon numarası oluşturucu
+fake = Faker()
+
+# Ülke kodları ve isimleri
+countries = {
+    "us": "Amerika Birleşik Devletleri",
+    "tr": "Türkiye",
+    "gb": "Birleşik Krallık",
+    "fr": "Fransa",
+    "de": "Almanya",
+    "it": "İtalya",
+    "es": "İspanya",
+    "nl": "Hollanda",
+    "ru": "Rusya",
+    "cn": "Çin",
+    "jp": "Japonya",
+    "kr": "Güney Kore",
+    "in": "Hindistan",
+    "au": "Avustralya",
+    "ca": "Kanada",
+    "br": "Brezilya",
+    "za": "Güney Afrika",
+    "mx": "Meksika",
+    "ar": "Arjantin",
+    "cl": "Şili",
+    "co": "Kolombiya",
+    "pe": "Peru",
+    "ve": "Venezuela",
+    "ec": "Ekvador",
+    "uy": "Uruguay",
+    "py": "Paraguay",
+    "bo": "Bolivya",
+    "py": "Paraguay",
+    "pe": "Peru",
+    "ve": "Venezuela",
+    "ec": "Ekvador",
+    "uy": "Uruguay",
+    "bo": "Bolivya",
+    "br": "Brezilya",
+    "cl": "Şili",
+    "co": "Kolombiya",
+    "py": "Paraguay",
+    "pe": "Peru",
+    "ve": "Venezuela",
+    "ec": "Ekvador",
+    "uy": "Uruguay",
+    "bo": "Bolivya",
+    "za": "Güney Afrika",
+    "au": "Avustralya",
+    "ca": "Kanada",
+    "us": "Amerika Birleşik Devletleri",
+    "tr": "Türkiye",
+}
 
 def clear_screen():
     os.system('clear')
@@ -86,8 +84,8 @@ def print_menu():
     print(Fore.GREEN + "[03] Random Cart Generator")
     print(Fore.GREEN + "[04] IP Adresi Sorgulama")
     print(Fore.GREEN + "[05] Admin Panel")
-    print(Fore.GREEN + "[06] Şifre Gücü Testi")
-    print(Fore.GREEN + "[07] Rastgele Telefon Numarası")  # Yeni seçenek
+    print(Fore.GREEN + "[06] Şifre Gücü Testi")  # Yeni seçenek
+    print(Fore.GREEN + "[07] Rastgele Telefon Numarası Üret")  # Yeni seçenek
 
 def generate_random_gmails(count):
     gmails = []
@@ -154,9 +152,15 @@ def check_password_strength(password):
     
     return "Şifre güçlü."
 
-def generate_phone_numbers(locale, count=20):
-    fake = Faker(locale)
-    return [fake.phone_number() for _ in range(count)]
+def generate_phone_numbers(locale, count):
+    phone_numbers = []
+    for _ in range(count):
+        # Faker ile telefon numarası oluştur
+        fake.add_provider(Faker.providers.phone_number.Provider)
+        fake.locales = [locale]
+        phone_numbers.append(fake.phone_number())
+    user_activity_log.append(f"Generated {count} random phone numbers for locale {locale}.")
+    return phone_numbers
 
 def admin_panel():
     clear_screen()
@@ -213,21 +217,41 @@ def main():
             password = input()
             result = check_password_strength(password)
             print(Fore.GREEN + result)
-            user_activity_log.append(f"Şifre testi yapıldı: {password} - Sonuç: {result}")
+            user_activity_log.append(f"Şifre testi yapıldı: {password} - Sonuç: {result}")  # Şifreyi admin paneline kaydet
             input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
         elif choice == '7':
             clear_screen()
-            print(Fore.WHITE + "Ülke kodu (örn. tr_TR):")
-            locale = input()
-            print(Fore.WHITE + "Kaç telefon numarası üretmek istersiniz?")
-            count = int(input())
-            phone_numbers = generate_phone_numbers(locale, count)
+            print(Fore.GREEN + "Mevcut Ülkeler:")
+            for code, name in countries.items():
+                print(f"{code.upper()} - {name}")
+
+            print(Fore.WHITE + "Ülke kodu (örn. tr):", end=" ")
+            locale_code = input().strip().lower()
+            
+            if locale_code not in countries:
+                print(Fore.RED + "Geçersiz ülke kodu. Lütfen tekrar deneyin.")
+                time.sleep(1)
+                continue
+
+            print(Fore.WHITE + "Kaç telefon numarası üretmek istersiniz?:", end=" ")
+            try:
+                num_count = int(input())
+                if num_count <= 0:
+                    print(Fore.RED + "Lütfen geçerli bir sayı girin.")
+                    continue
+            except ValueError:
+                print(Fore.RED + "Lütfen geçerli bir sayı girin.")
+                continue
+
+            phone_numbers = generate_phone_numbers(locale_code, num_count)
+            print(Fore.GREEN + f"{num_count} adet rastgele telefon numarası:")
             for number in phone_numbers:
                 print(number)
             input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
         else:
             clear_screen()
-            print(Fore.RED + "Geçersiz seçim. Lütfen geçerli bir seçenek girin.")
+            print(Fore.RED + "Geçersiz seçim. Lütfen tekrar deneyin.")
+            time.sleep(1)
 
 if __name__ == "__main__":
     main()
