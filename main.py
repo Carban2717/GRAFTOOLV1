@@ -11,58 +11,20 @@ init(autoreset=True)
 # Kullanıcı işlemlerini takip etmek için bir liste
 user_activity_log = []
 
-# Faker kütüphanesi ile telefon numarası oluşturucu
-fake = Faker()
-
-# Ülke kodları ve isimleri
+# Ülke bilgileri
 countries = {
-    "us": "Amerika Birleşik Devletleri",
-    "tr": "Türkiye",
-    "gb": "Birleşik Krallık",
-    "fr": "Fransa",
-    "de": "Almanya",
-    "it": "İtalya",
-    "es": "İspanya",
-    "nl": "Hollanda",
-    "ru": "Rusya",
-    "cn": "Çin",
-    "jp": "Japonya",
-    "kr": "Güney Kore",
-    "in": "Hindistan",
-    "au": "Avustralya",
-    "ca": "Kanada",
-    "br": "Brezilya",
-    "za": "Güney Afrika",
-    "mx": "Meksika",
-    "ar": "Arjantin",
-    "cl": "Şili",
-    "co": "Kolombiya",
-    "pe": "Peru",
-    "ve": "Venezuela",
-    "ec": "Ekvador",
-    "uy": "Uruguay",
-    "py": "Paraguay",
-    "bo": "Bolivya",
-    "py": "Paraguay",
-    "pe": "Peru",
-    "ve": "Venezuela",
-    "ec": "Ekvador",
-    "uy": "Uruguay",
-    "bo": "Bolivya",
-    "br": "Brezilya",
-    "cl": "Şili",
-    "co": "Kolombiya",
-    "py": "Paraguay",
-    "pe": "Peru",
-    "ve": "Venezuela",
-    "ec": "Ekvador",
-    "uy": "Uruguay",
-    "bo": "Bolivya",
-    "za": "Güney Afrika",
-    "au": "Avustralya",
-    "ca": "Kanada",
-    "us": "Amerika Birleşik Devletleri",
-    "tr": "Türkiye",
+    'tr': 'Türkiye', 'us': 'Amerika Birleşik Devletleri', 'de': 'Almanya', 'fr': 'Fransa', 
+    'es': 'İspanya', 'it': 'İtalya', 'uk': 'Birleşik Krallık', 'cn': 'Çin', 'jp': 'Japonya', 
+    'kr': 'Güney Kore', 'in': 'Hindistan', 'au': 'Avustralya', 'br': 'Brezilya', 
+    'za': 'Güney Afrika', 'ru': 'Rusya', 'mx': 'Meksika', 'nl': 'Hollanda', 'se': 'İsveç', 
+    'no': 'Norveç', 'fi': 'Finlandiya', 'dk': 'Danimarka', 'pl': 'Polonya', 'cz': 'Çek Cumhuriyeti', 
+    'hu': 'Macaristan', 'ro': 'Romanya', 'bg': 'Bulgaristan', 'gr': 'Yunanistan', 'tr': 'Türkiye',
+    'ae': 'Birleşik Arap Emirlikleri', 'sa': 'Suudi Arabistan', 'pk': 'Pakistan', 'bd': 'Bangladeş',
+    'vn': 'Vietnam', 'th': 'Tayland', 'my': 'Malezya', 'sg': 'Singapur', 'ph': 'Filipinler',
+    'id': 'Endonezya', 'ua': 'Ukrayna', 'by': 'Beyaz Rusya', 'il': 'İsrail', 'kw': 'Kuveyt',
+    'qa': 'Katar', 'om': 'Umman', 'jo': 'Ürdün', 'ly': 'Libya', 'dz': 'Cezayir', 'ma': 'Fas',
+    'tn': 'Tunus', 'et': 'Etiyopya', 'ke': 'Kenya', 'ng': 'Nijerya', 'gh': 'Gana', 'zm': 'Zambiya',
+    'zw': 'Zimbabve', 'co': 'Kolombiya', 'pe': 'Peru', 'cl': 'Şili', 'ar': 'Arjantin'
 }
 
 def clear_screen():
@@ -85,7 +47,7 @@ def print_menu():
     print(Fore.GREEN + "[04] IP Adresi Sorgulama")
     print(Fore.GREEN + "[05] Admin Panel")
     print(Fore.GREEN + "[06] Şifre Gücü Testi")  # Yeni seçenek
-    print(Fore.GREEN + "[07] Rastgele Telefon Numarası Üret")  # Yeni seçenek
+    print(Fore.GREEN + "[07] Rastgele Telefon Numarası")  # Yeni seçenek
 
 def generate_random_gmails(count):
     gmails = []
@@ -152,16 +114,6 @@ def check_password_strength(password):
     
     return "Şifre güçlü."
 
-def generate_phone_numbers(locale, count):
-    phone_numbers = []
-    for _ in range(count):
-        # Faker ile telefon numarası oluştur
-        fake.add_provider(Faker.providers.phone_number.Provider)
-        fake.locales = [locale]
-        phone_numbers.append(fake.phone_number())
-    user_activity_log.append(f"Generated {count} random phone numbers for locale {locale}.")
-    return phone_numbers
-
 def admin_panel():
     clear_screen()
     print(Fore.RED + "Admin Password:")
@@ -176,6 +128,15 @@ def admin_panel():
     else:
         print(Fore.RED + "Yanlış şifre. Geri dönülüyor...")
         time.sleep(1)
+
+def generate_phone_numbers(country_code, count):
+    fake = Faker()
+    fake.add_provider(Faker.providers.phone_number.Provider)
+    phone_numbers = []
+    for _ in range(count):
+        phone_numbers.append(fake.phone_number())
+    user_activity_log.append(f"Generated {count} random phone numbers for country code '{country_code}'.")
+    return phone_numbers
 
 def main():
     while True:
@@ -221,32 +182,18 @@ def main():
             input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
         elif choice == '7':
             clear_screen()
-            print(Fore.GREEN + "Mevcut Ülkeler:")
+            print(Fore.WHITE + "Ülke kodunu girin (örn. tr_TR):")
             for code, name in countries.items():
-                print(f"{code.upper()} - {name}")
-
-            print(Fore.WHITE + "Ülke kodu (örn. tr):", end=" ")
+                print(Fore.GREEN + f"{code}: {name}")
             locale_code = input().strip().lower()
-            
-            if locale_code not in countries:
-                print(Fore.RED + "Geçersiz ülke kodu. Lütfen tekrar deneyin.")
-                time.sleep(1)
-                continue
-
-            print(Fore.WHITE + "Kaç telefon numarası üretmek istersiniz?:", end=" ")
-            try:
-                num_count = int(input())
-                if num_count <= 0:
-                    print(Fore.RED + "Lütfen geçerli bir sayı girin.")
-                    continue
-            except ValueError:
-                print(Fore.RED + "Lütfen geçerli bir sayı girin.")
-                continue
-
-            phone_numbers = generate_phone_numbers(locale_code, num_count)
-            print(Fore.GREEN + f"{num_count} adet rastgele telefon numarası:")
-            for number in phone_numbers:
-                print(number)
+            if locale_code in countries:
+                clear_screen()
+                print(Fore.GREEN + f"{countries[locale_code]} ülkesinden rastgele 20 telefon numarası:")
+                phone_numbers = generate_phone_numbers(locale_code, 20)
+                for number in phone_numbers:
+                    print(number)
+            else:
+                print(Fore.RED + "Geçersiz ülke kodu.")
             input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
         else:
             clear_screen()
