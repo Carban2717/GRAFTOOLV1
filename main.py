@@ -1,31 +1,13 @@
 import os
 import random
 import time
-import requests
 import re
-from faker import Faker
 from colorama import Fore, init
 
 init(autoreset=True)
 
 # Kullanıcı işlemlerini takip etmek için bir liste
 user_activity_log = []
-
-# Ülke kodları ve isimleri
-countries = {
-    'tr_tr': 'Türkiye', 'us_us': 'Amerika Birleşik Devletleri', 'uk_uk': 'Birleşik Krallık',
-    'de_de': 'Almanya', 'fr_fr': 'Fransa', 'it_it': 'İtalya', 'es_es': 'İspanya', 'cn_cn': 'Çin',
-    'jp_jp': 'Japonya', 'kr_kr': 'Güney Kore', 'in_in': 'Hindistan', 'au_au': 'Avustralya',
-    'ca_ca': 'Kanada', 'ru_ru': 'Rusya', 'br_br': 'Brezilya', 'mx_mx': 'Meksika', 'za_za': 'Güney Afrika',
-    'ng_ng': 'Nijerya', 'eg_eg': 'Mısır', 'sa_sa': 'Suudi Arabistan', 'ae_ae': 'Birleşik Arap Emirlikleri',
-    'il_il': 'İsrail', 'se_se': 'İsveç', 'no_no': 'Norveç', 'dk_dk': 'Danimarka', 'fi_fi': 'Finlandiya',
-    'pl_pl': 'Polonya', 'cz_cz': 'Çek Cumhuriyeti', 'sk_sk': 'Slovakya', 'hu_hu': 'Macaristan',
-    'ro_ro': 'Romanya', 'bg_bg': 'Bulgaristan', 'gr_gr': 'Yunanistan', 'tr_tr': 'Türkiye',
-    'pt_pt': 'Portekiz', 'at_at': 'Avusturya', 'ch_ch': 'İsviçre', 'ie_ie': 'İrlanda', 'lt_lt': 'Litvanya',
-    'lv_lv': 'Letonya', 'ee_ee': 'Estonya', 'by_by': 'Beyaz Rusya', 'ua_ua': 'Ukrayna', 'kz_kz': 'Kazakistan'
-}
-
-fake = Faker()
 
 def clear_screen():
     os.system('clear')
@@ -47,7 +29,7 @@ def print_menu():
     print(Fore.GREEN + "[04] IP Adresi Sorgulama")
     print(Fore.GREEN + "[05] Admin Panel")
     print(Fore.GREEN + "[06] Şifre Gücü Testi")
-    print(Fore.GREEN + "[07] Telefon Numarası Üret")
+    print(Fore.GREEN + "[07] E-posta Doğrulama")  # Yeni seçenek
 
 def generate_random_gmails(count):
     gmails = []
@@ -114,14 +96,13 @@ def check_password_strength(password):
     
     return "Şifre güçlü."
 
-def generate_phone_numbers(locale_code, num_count):
-    phone_numbers = []
-    for _ in range(num_count):
-        if locale_code == 'tr_tr':
-            phone_numbers.append(fake.phone_number())
-        else:
-            phone_numbers.append("Desteklenmeyen ülke kodu.")
-    return phone_numbers
+def check_email(email):
+    """E-posta adresinin geçerli olup olmadığını kontrol eder."""
+    email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+    if not re.match(email_regex, email):
+        return "Geçersiz e-posta formatı."
+    
+    return "E-posta adresi geçerli."
 
 def admin_panel():
     clear_screen()
@@ -182,15 +163,11 @@ def main():
             input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
         elif choice == '7':
             clear_screen()
-            print(Fore.WHITE + "Ülke kodu (örn. tr_tr):")
-            locale_code = input().strip().lower()
-            print(Fore.WHITE + "Numara adedi:")
-            num_count = int(input().strip())
-            print(Fore.GREEN + f"{countries.get(locale_code, 'Desteklenmeyen ülke kodu')} ülkesinden rastgele {num_count} telefon numarası:")
-            phone_numbers = generate_phone_numbers(locale_code, num_count)
-            for number in phone_numbers:
-                print(number)
-            user_activity_log.append(f"{num_count} telefon numarası üretildi: Ülke kodu: {locale_code}")
+            print(Fore.WHITE + "Doğrulamak istediğiniz e-posta adresini girin:")
+            email = input()
+            result = check_email(email)
+            print(Fore.GREEN + result)
+            user_activity_log.append(f"E-posta testi yapıldı: {email} - Sonuç: {result}")  # E-posta testi admin paneline kaydedildi
             input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
         else:
             clear_screen()
