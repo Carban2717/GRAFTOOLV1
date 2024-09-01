@@ -1,6 +1,7 @@
 import os
 import random
 import time
+import requests
 from colorama import Fore, init
 
 init(autoreset=True)
@@ -21,6 +22,8 @@ def print_menu():
     print(Fore.RED + "Developer: carbans2717")
     print(Fore.GREEN + "[01] Çıkış")
     print(Fore.GREEN + "[02] Random Gmail")
+    print(Fore.GREEN + "[03] Random Cart Generator")
+    print(Fore.GREEN + "[04] IP Adresi Sorgulama")  # Yeni seçenek
 
 def generate_random_gmails(count):
     gmails = []
@@ -29,10 +32,42 @@ def generate_random_gmails(count):
         gmails.append(f'{username}@gmail.com')
     return gmails
 
+def generate_random_carts(count):
+    carts = []
+    for _ in range(count):
+        number = ''.join(random.choices('0123456789', k=16))
+        exp_month = str(random.randint(1, 12)).zfill(2)
+        exp_year = str(random.randint(24, 34))  # Gelecek yıllar
+        cvv = ''.join(random.choices('0123456789', k=3))
+        carts.append(f'{number} | {exp_month}/{exp_year} | {cvv}')
+    return carts
+
+def get_ip_info(ip_address):
+    try:
+        response = requests.get(f"http://ip-api.com/json/{ip_address}")
+        data = response.json()
+
+        if data['status'] == 'fail':
+            print(Fore.RED + "Hatalı IP adresi girdiniz.")
+            return
+
+        print(Fore.GREEN + f"IP Adresi: {data['query']}")
+        print(Fore.GREEN + f"Ülke: {data['country']}")
+        print(Fore.GREEN + f"Bölge: {data['regionName']}")
+        print(Fore.GREEN + f"Şehir: {data['city']}")
+        print(Fore.GREEN + f"ISP: {data['isp']}")
+        print(Fore.GREEN + f"Organizasyon: {data['org']}")
+        print(Fore.GREEN + f"AS: {data['as']}")
+        print(Fore.GREEN + f"Posta Kodu: {data['zip']}")
+        print(Fore.GREEN + f"Enlem: {data['lat']}")
+        print(Fore.GREEN + f"Boylam: {data['lon']}")
+    except requests.RequestException as e:
+        print(Fore.RED + "Bir hata oluştu:", e)
+
 def main():
     while True:
         print_menu()
-        choice = input(Fore.GREEN + "Seçiminizi yapın (1 veya 2): ")
+        choice = input(Fore.GREEN + "Seçiminizi yapın (1, 2, 3 veya 4): ")
 
         if choice == '1':
             clear_screen()
@@ -45,6 +80,21 @@ def main():
             gmails = generate_random_gmails(50)
             for gmail in gmails:
                 print(gmail)
+            input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
+        elif choice == '3':
+            clear_screen()
+            print(Fore.GREEN + "50 adet Rastgele Kredi Kartı bilgisi:")
+            carts = generate_random_carts(50)
+            for cart in carts:
+                print(cart)
+            input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
+        elif choice == '4':
+            clear_screen()
+            print(Fore.WHITE + "IP Adresi:")
+            ip_address = input()
+            clear_screen()
+            print(Fore.GREEN + f"{ip_address} adresi sorgulanıyor...")
+            get_ip_info(ip_address)
             input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
         else:
             clear_screen()
