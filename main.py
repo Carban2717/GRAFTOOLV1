@@ -30,8 +30,6 @@ def print_menu():
     print(Fore.GREEN + "[04] IP Adresi Sorgulama")
     print(Fore.GREEN + "[05] Admin Panel")
     print(Fore.GREEN + "[06] Şifre Gücü Testi")
-    print(Fore.GREEN + "[07] E-posta Doğrulama")
-    print(Fore.GREEN + "[08] Geçici E-posta ve Gelen E-postalar")  # Yeni seçenek
 
 def generate_random_gmails(count):
     gmails = []
@@ -98,43 +96,6 @@ def check_password_strength(password):
     
     return "Şifre güçlü."
 
-def check_email(email):
-    """E-posta adresinin geçerli olup olmadığını kontrol eder."""
-    email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-    if not re.match(email_regex, email):
-        return "Geçersiz e-posta formatı."
-    
-    return "E-posta adresi geçerli."
-
-def get_temp_email():
-    """Temp-mail sitesinden geçici bir e-posta adresi alır."""
-    try:
-        response = requests.get("https://temp-mail.org/en/")
-        # Bu URL üzerinden doğrudan geçici e-posta almak mümkün olmayabilir. 
-        # Gerçek bir temp-mail API entegrasyonu gereklidir.
-        # Burada örnek olarak sabit bir e-posta adresi döneceğiz.
-        return "example@temp-mail.org"  # Burayı gerçek temp-mail API çağrısıyla değiştirin
-    except requests.RequestException as e:
-        print(Fore.RED + "Bir hata oluştu:", e)
-        return None
-
-def get_emails(temp_email):
-    """Geçici e-posta adresine gelen e-postaları kontrol eder."""
-    try:
-        # Bu URL üzerinden doğrudan e-postaları almak mümkün olmayabilir. 
-        # Gerçek bir temp-mail API entegrasyonu gereklidir.
-        # Burada örnek olarak sabit bir e-posta mesajı döneceğiz.
-        print(Fore.GREEN + f"{temp_email} adresine gelen e-postalar:")
-        # Örnek e-posta verileri
-        emails = [
-            "From: example1@example.com\nSubject: Test Email 1\n\nThis is a test email.",
-            "From: example2@example.com\nSubject: Test Email 2\n\nThis is another test email."
-        ]
-        for email in emails:
-            print(Fore.GREEN + email)
-    except requests.RequestException as e:
-        print(Fore.RED + "Bir hata oluştu:", e)
-
 def admin_panel():
     clear_screen()
     print(Fore.RED + "Admin Password:")
@@ -153,7 +114,7 @@ def admin_panel():
 def main():
     while True:
         print_menu()
-        choice = input(Fore.GREEN + "Seçiminizi yapın (1, 2, 3, 4, 5, 6, 7 veya 8): ")
+        choice = input(Fore.GREEN + "Seçiminizi yapın (1, 2, 3, 4, 5 veya 6): ")
 
         if choice == '1':
             clear_screen()
@@ -191,29 +152,6 @@ def main():
             result = check_password_strength(password)
             print(Fore.GREEN + result)
             user_activity_log.append(f"Şifre testi yapıldı: {password} - Sonuç: {result}")  # Şifreyi admin paneline kaydet
-            input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
-        elif choice == '7':
-            clear_screen()
-            print(Fore.WHITE + "Doğrulamak istediğiniz e-posta adresini girin:")
-            email = input()
-            result = check_email(email)
-            print(Fore.GREEN + result)
-            user_activity_log.append(f"E-posta testi yapıldı: {email} - Sonuç: {result}")  # E-posta testi admin paneline kaydedildi
-            input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
-        elif choice == '8':
-            clear_screen()
-            print(Fore.WHITE + "Geçici e-posta almak için 'al' yazın:")
-            action = input()
-            if action.lower() == 'al':
-                temp_email = get_temp_email()
-                if temp_email:
-                    print(Fore.GREEN + f"Geçici E-posta Adresi: {temp_email}")
-                    print(Fore.WHITE + "E-posta adresinize gelen e-postalar:")
-                    get_emails(temp_email)
-                else:
-                    print(Fore.RED + "Geçici e-posta alınamadı.")
-            else:
-                print(Fore.RED + "Geçici e-posta alınmadı.")
             input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
         else:
             clear_screen()
