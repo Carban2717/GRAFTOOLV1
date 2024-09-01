@@ -3,9 +3,66 @@ import random
 import time
 import requests
 import re
+from faker import Faker
 from colorama import Fore, init
 
 init(autoreset=True)
+
+# Desteklenen ülkeler ve kodları
+countries = {
+    'USA': 'en_US',
+    'Germany': 'de_DE',
+    'France': 'fr_FR',
+    'Italy': 'it_IT',
+    'Spain': 'es_ES',
+    'UK': 'en_GB',
+    'Canada': 'en_CA',
+    'Australia': 'en_AU',
+    'Japan': 'ja_JP',
+    'China': 'zh_CN',
+    'Brazil': 'pt_BR',
+    'India': 'en_IN',
+    'Russia': 'ru_RU',
+    'South Africa': 'en_ZA',
+    'Mexico': 'es_MX',
+    'Argentina': 'es_AR',
+    'Chile': 'es_CL',
+    'Colombia': 'es_CO',
+    'Peru': 'es_PE',
+    'Venezuela': 'es_VE',
+    'Saudi Arabia': 'ar_SA',
+    'United Arab Emirates': 'en_AE',
+    'Turkey': 'tr_TR',
+    'Egypt': 'ar_EG',
+    'Israel': 'en_IL',
+    'Pakistan': 'en_PK',
+    'Thailand': 'th_TH',
+    'South Korea': 'ko_KR',
+    'Malaysia': 'ms_MY',
+    'Singapore': 'en_SG',
+    'Philippines': 'en_PH',
+    'Vietnam': 'vi_VN',
+    'New Zealand': 'en_NZ',
+    'Ireland': 'en_IE',
+    'Sweden': 'sv_SE',
+    'Norway': 'no_NO',
+    'Denmark': 'da_DK',
+    'Finland': 'fi_FI',
+    'Greece': 'el_GR',
+    'Portugal': 'pt_PT',
+    'Poland': 'pl_PL',
+    'Czech Republic': 'cs_CZ',
+    'Hungary': 'hu_HU',
+    'Romania': 'ro_RO',
+    'Bulgaria': 'bg_BG',
+    'Ukraine': 'uk_UA',
+    'Belarus': 'be_BY',
+    'Lithuania': 'lt_LT',
+    'Latvia': 'lv_LV',
+    'Estonia': 'et_EE',
+    'Slovakia': 'sk_SK',
+    'Croatia': 'hr_HR'
+}
 
 # Kullanıcı işlemlerini takip etmek için bir liste
 user_activity_log = []
@@ -29,7 +86,8 @@ def print_menu():
     print(Fore.GREEN + "[03] Random Cart Generator")
     print(Fore.GREEN + "[04] IP Adresi Sorgulama")
     print(Fore.GREEN + "[05] Admin Panel")
-    print(Fore.GREEN + "[06] Şifre Gücü Testi")  # Yeni seçenek
+    print(Fore.GREEN + "[06] Şifre Gücü Testi")
+    print(Fore.GREEN + "[07] Rastgele Telefon Numarası")  # Yeni seçenek
 
 def generate_random_gmails(count):
     gmails = []
@@ -96,6 +154,10 @@ def check_password_strength(password):
     
     return "Şifre güçlü."
 
+def generate_phone_numbers(locale, count=20):
+    fake = Faker(locale)
+    return [fake.phone_number() for _ in range(count)]
+
 def admin_panel():
     clear_screen()
     print(Fore.RED + "Admin Password:")
@@ -114,7 +176,7 @@ def admin_panel():
 def main():
     while True:
         print_menu()
-        choice = input(Fore.GREEN + "Seçiminizi yapın (1, 2, 3, 4, 5 veya 6): ")
+        choice = input(Fore.GREEN + "Seçiminizi yapın (1, 2, 3, 4, 5, 6 veya 7): ")
 
         if choice == '1':
             clear_screen()
@@ -151,12 +213,21 @@ def main():
             password = input()
             result = check_password_strength(password)
             print(Fore.GREEN + result)
-            user_activity_log.append(f"Şifre testi yapıldı: {result}")
+            user_activity_log.append(f"Şifre testi yapıldı: {password} - Sonuç: {result}")
+            input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
+        elif choice == '7':
+            clear_screen()
+            print(Fore.WHITE + "Ülke kodu (örn. tr_TR):")
+            locale = input()
+            print(Fore.WHITE + "Kaç telefon numarası üretmek istersiniz?")
+            count = int(input())
+            phone_numbers = generate_phone_numbers(locale, count)
+            for number in phone_numbers:
+                print(number)
             input(Fore.GREEN + "Devam etmek için bir tuşa basın...")
         else:
             clear_screen()
-            print(Fore.RED + "Geçersiz seçim. Lütfen tekrar deneyin.")
-            time.sleep(1)
+            print(Fore.RED + "Geçersiz seçim. Lütfen geçerli bir seçenek girin.")
 
 if __name__ == "__main__":
     main()
